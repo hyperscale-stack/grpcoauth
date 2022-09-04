@@ -18,8 +18,24 @@ import (
 )
 
 func main() {
-    // init gRPC Dial and init service
+    cert := ...
 
+    authF := func(ctx context.Context, creds *OAuthCredentials) (context.Context, error) {
+		// implements your business logic for authenticate
+        // creds contains AccessToken or ClientID and ClientSecret
+
+		return ctx, nil
+	}
+
+    opts := []grpc.ServerOption{
+		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+		grpc.UnaryInterceptor(UnaryServerInterceptor(authF)),
+	}
+
+	gsrv := grpc.NewServer(opts...)
+
+
+    // init gRPC Dial and init service
     greeter := ...
 
     _, err = greeter.SayHello(ctx, &greeterv1.SayHelloRequest{}, grpcoauth.PerRPCTokenCredentials("feadbb35-c2be-4529-b2a6-19109e07eaa3"))

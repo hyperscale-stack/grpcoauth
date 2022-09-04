@@ -52,6 +52,13 @@ func (gc *fakeGreeterServer) SayHello(ctx context.Context, in *greeterv1.SayHell
 func TestPerRPCClientIDCredentials(t *testing.T) {
 	var wg sync.WaitGroup
 
+	authF := func(ctx context.Context, creds *OAuthCredentials) (context.Context, error) {
+		assert.Equal(t, "foo", creds.ClientID)
+		assert.Equal(t, "bar", creds.ClientSecret)
+
+		return ctx, nil
+	}
+
 	ctx := context.Background()
 
 	fgs := &fakeGreeterServer{}
@@ -77,6 +84,7 @@ func TestPerRPCClientIDCredentials(t *testing.T) {
 
 	opts := []grpc.ServerOption{
 		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+		grpc.UnaryInterceptor(UnaryServerInterceptor(authF)),
 	}
 
 	gsrv := grpc.NewServer(opts...)
@@ -118,6 +126,12 @@ func TestPerRPCClientIDCredentials(t *testing.T) {
 func TestPerRPCTokenCredentials(t *testing.T) {
 	var wg sync.WaitGroup
 
+	authF := func(ctx context.Context, creds *OAuthCredentials) (context.Context, error) {
+		assert.Equal(t, "feadbb35-c2be-4529-b2a6-19109e07eaa3", creds.AccessToken)
+
+		return ctx, nil
+	}
+
 	ctx := context.Background()
 
 	fgs := &fakeGreeterServer{}
@@ -142,6 +156,7 @@ func TestPerRPCTokenCredentials(t *testing.T) {
 
 	opts := []grpc.ServerOption{
 		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+		grpc.UnaryInterceptor(UnaryServerInterceptor(authF)),
 	}
 
 	gsrv := grpc.NewServer(opts...)
