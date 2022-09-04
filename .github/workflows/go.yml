@@ -34,6 +34,9 @@ jobs:
     - name: Buf generate
       run : buf generate
 
+    - name: Generate certs
+      run: make cert
+
     - name: Build
       run: go build -race -v ./...
 
