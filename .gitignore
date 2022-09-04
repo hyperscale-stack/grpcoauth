@@ -1,0 +1,13 @@
+.DS_Store
+*.out
+
+.vscode/
+vendor/
+
+*.swp
+
+certs/
+!certs/Makefile
+!certs/server-ext.cnf
+
+gen/

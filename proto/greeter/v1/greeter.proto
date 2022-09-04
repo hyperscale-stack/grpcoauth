@@ -1,0 +1,12 @@
+
+message SayHelloRequest {
+
+}
+
+message SayHelloResponse {
+
+}
+
+service Greeter {
+    rpc SayHello (SayHelloRequest) returns (SayHelloResponse) {}
+}
