@@ -2,10 +2,8 @@ package grpcoauth
 
 import (
 	"context"
-	"crypto/tls"
 	"crypto/x509"
 	"errors"
-	"fmt"
 	"net"
 	"os"
 	"sync"
@@ -17,25 +15,6 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 )
-
-func Certificate(certPath string, keyPath string) (tls.Certificate, error) {
-	crt, err := os.ReadFile(certPath)
-	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("read cert file: %w", err)
-	}
-
-	key, err := os.ReadFile(keyPath)
-	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("read key file: %w", err)
-	}
-
-	cert, err := tls.X509KeyPair(crt, key)
-	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("create key pair: %w", err)
-	}
-
-	return cert, nil
-}
 
 type fakeGreeterServer struct {
 	sayHelloFn func(context.Context, *greeterv1.SayHelloRequest) (*greeterv1.SayHelloResponse, error)
@@ -79,11 +58,11 @@ func TestPerRPCClientIDCredentials(t *testing.T) {
 	l, err := net.Listen("tcp", "localhost:0") // IIRC 0 == "first available port"
 	assert.NoError(t, err)
 
-	cert, err := Certificate("./certs/server-cert.pem", "./certs/server-key.pem")
+	creds, err := credentials.NewServerTLSFromFile("./certs/server-cert.pem", "./certs/server-key.pem")
 	assert.NoError(t, err)
 
 	opts := []grpc.ServerOption{
-		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+		grpc.Creds(creds),
 		grpc.UnaryInterceptor(UnaryServerInterceptor(authF)),
 	}
 
@@ -103,10 +82,10 @@ func TestPerRPCClientIDCredentials(t *testing.T) {
 	pool := x509.NewCertPool()
 	pool.AppendCertsFromPEM(crt)
 
-	creds := credentials.NewClientTLSFromCert(pool, "localhost")
+	dialCreds := credentials.NewClientTLSFromCert(pool, "localhost")
 
 	clientOpts := []grpc.DialOption{
-		grpc.WithTransportCredentials(creds),
+		grpc.WithTransportCredentials(dialCreds),
 	}
 
 	conn, err := grpc.Dial(fakeGreeterAddr, clientOpts...)
@@ -151,11 +130,11 @@ func TestPerRPCTokenCredentials(t *testing.T) {
 	l, err := net.Listen("tcp", "localhost:0") // IIRC 0 == "first available port"
 	assert.NoError(t, err)
 
-	cert, err := Certificate("./certs/server-cert.pem", "./certs/server-key.pem")
+	creds, err := credentials.NewServerTLSFromFile("./certs/server-cert.pem", "./certs/server-key.pem")
 	assert.NoError(t, err)
 
 	opts := []grpc.ServerOption{
-		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+		grpc.Creds(creds),
 		grpc.UnaryInterceptor(UnaryServerInterceptor(authF)),
 	}
 
@@ -175,10 +154,10 @@ func TestPerRPCTokenCredentials(t *testing.T) {
 	pool := x509.NewCertPool()
 	pool.AppendCertsFromPEM(crt)
 
-	creds := credentials.NewClientTLSFromCert(pool, "localhost")
+	dialCreds := credentials.NewClientTLSFromCert(pool, "localhost")
 
 	clientOpts := []grpc.DialOption{
-		grpc.WithTransportCredentials(creds),
+		grpc.WithTransportCredentials(dialCreds),
 	}
 
 	conn, err := grpc.Dial(fakeGreeterAddr, clientOpts...)
@@ -218,11 +197,11 @@ func TestWithPerRPCClientIDCredentials(t *testing.T) {
 	l, err := net.Listen("tcp", "localhost:0") // IIRC 0 == "first available port"
 	assert.NoError(t, err)
 
-	cert, err := Certificate("./certs/server-cert.pem", "./certs/server-key.pem")
+	creds, err := credentials.NewServerTLSFromFile("./certs/server-cert.pem", "./certs/server-key.pem")
 	assert.NoError(t, err)
 
 	opts := []grpc.ServerOption{
-		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+		grpc.Creds(creds),
 	}
 
 	gsrv := grpc.NewServer(opts...)
@@ -241,10 +220,10 @@ func TestWithPerRPCClientIDCredentials(t *testing.T) {
 	pool := x509.NewCertPool()
 	pool.AppendCertsFromPEM(crt)
 
-	creds := credentials.NewClientTLSFromCert(pool, "localhost")
+	dialCreds := credentials.NewClientTLSFromCert(pool, "localhost")
 
 	clientOpts := []grpc.DialOption{
-		grpc.WithTransportCredentials(creds),
+		grpc.WithTransportCredentials(dialCreds),
 		WithPerRPCClientIDCredentials("foo", "bar"),
 	}
 
@@ -284,11 +263,11 @@ func TestWithPerRPCTokenCredentials(t *testing.T) {
 	l, err := net.Listen("tcp", "localhost:0") // IIRC 0 == "first available port"
 	assert.NoError(t, err)
 
-	cert, err := Certificate("./certs/server-cert.pem", "./certs/server-key.pem")
+	creds, err := credentials.NewServerTLSFromFile("./certs/server-cert.pem", "./certs/server-key.pem")
 	assert.NoError(t, err)
 
 	opts := []grpc.ServerOption{
-		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+		grpc.Creds(creds),
 	}
 
 	gsrv := grpc.NewServer(opts...)
@@ -307,10 +286,10 @@ func TestWithPerRPCTokenCredentials(t *testing.T) {
 	pool := x509.NewCertPool()
 	pool.AppendCertsFromPEM(crt)
 
-	creds := credentials.NewClientTLSFromCert(pool, "localhost")
+	dialCreds := credentials.NewClientTLSFromCert(pool, "localhost")
 
 	clientOpts := []grpc.DialOption{
-		grpc.WithTransportCredentials(creds),
+		grpc.WithTransportCredentials(dialCreds),
 		WithPerRPCTokenCredentials("feadbb35-c2be-4529-b2a6-19109e07eaa3"),
 	}
 
