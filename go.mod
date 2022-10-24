@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
 	google.golang.org/grpc v1.50.1
 )
