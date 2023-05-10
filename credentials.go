@@ -12,16 +12,20 @@ import (
 func newOAuth2ClientIDCredentials(clientID string, secret string) credentials.PerRPCCredentials {
 	token := base64.StdEncoding.EncodeToString([]byte(clientID + ":" + secret))
 
-	return oauth.NewOauthAccess(&oauth2.Token{
-		AccessToken: token,
-		TokenType:   "basic",
-	})
+	return &oauth.TokenSource{
+		TokenSource: oauth2.StaticTokenSource(&oauth2.Token{
+			AccessToken: token,
+			TokenType:   "basic",
+		}),
+	}
 }
 
 func newOAuth2AccessTokenCredentials(token string) credentials.PerRPCCredentials {
-	return oauth.NewOauthAccess(&oauth2.Token{
-		AccessToken: token,
-	})
+	return &oauth.TokenSource{
+		TokenSource: oauth2.StaticTokenSource(&oauth2.Token{
+			AccessToken: token,
+		}),
+	}
 }
 
 // PerRPCClientIDCredentials returns a CallOption that sets credentials.PerRPCCredentials
