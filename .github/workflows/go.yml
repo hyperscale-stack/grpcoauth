@@ -23,7 +23,7 @@ jobs:
       uses: arduino/setup-protoc@v1
 
     - name: Buf setup
-      uses: bufbuild/buf-setup-action@v1.22.0
+      uses: bufbuild/buf-setup-action@v1.23.1
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
