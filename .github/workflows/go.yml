@@ -24,7 +24,7 @@ jobs:
         uses: arduino/setup-protoc@v2
 
       - name: Buf setup
-        uses: bufbuild/buf-setup-action@v1.26.1
+        uses: bufbuild/buf-setup-action@v1.27.0
 
       - name: Buf build
         run: buf build
