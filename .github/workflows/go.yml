@@ -20,17 +20,17 @@ jobs:
           go-version: "1.x"
         id: go
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v3
+      #- name: Install Protoc
+      #  uses: arduino/setup-protoc@v3
 
-      - name: Buf setup
-        uses: bufbuild/buf-setup-action@v1.47.2
+      #- name: Buf setup
+      #  uses: bufbuild/buf-setup-action@v1.47.2
 
-      - name: Buf build
-        run: buf build
+      #- name: Buf build
+      #  run: buf build
 
-      - name: Buf generate
-        run: buf generate
+      #- name: Buf generate
+      #  run: buf generate
 
       - name: Generate certs
         run: make cert
