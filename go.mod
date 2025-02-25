@@ -1,7 +1,8 @@
 module github.com/hyperscale-stack/grpcoauth
 
-go 1.22.7
-toolchain go1.23.3
+go 1.23
+
+toolchain go1.24.0
 
 require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.0
