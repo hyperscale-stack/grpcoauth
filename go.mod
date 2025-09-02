@@ -6,7 +6,7 @@ toolchain go1.24.0
 
 require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.2
-	github.com/stretchr/testify v1.11.0
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/oauth2 v0.30.0
 	google.golang.org/grpc v1.75.0
 	google.golang.org/protobuf v1.36.8
