@@ -3,7 +3,7 @@ module github.com/hyperscale-stack/grpcoauth
 go 1.24.0
 
 require (
-	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.2
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/oauth2 v0.32.0
 	google.golang.org/grpc v1.76.0
